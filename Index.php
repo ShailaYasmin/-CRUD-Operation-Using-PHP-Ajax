@@ -35,7 +35,7 @@
     <input type="Text" class="form-control"id="Pcategory" placeholder="Enter Product Category" name="Pcategory">
 </div>
  
-  <button type="button"id="submit" class="btn btn-primary">Submit</button>
+  <button type="button"id="submit" class="btn btn-success">Submit</button>
 </form>
 
 </div>

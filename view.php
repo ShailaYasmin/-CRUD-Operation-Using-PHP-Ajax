@@ -18,21 +18,21 @@ $conn =new mysqli('localhost','root','','productform');
     <title>View Records</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"> 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <div class="container">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://lipis.github.io/bootstrap-sweetalert/dist/sweetalert.js"></script>
+    <link rel="stylesheet" href="https://lipis.github.io/bootstrap-sweetalert/dist/sweetalert.css" />
+    
     </head> 
         
 <body>
-<div class="form-group">
-    <!-- <label>Product ID</label> -->
-    <input type="hidden" class="form-control" id="ProductID" placeholder="Enter Product Name" name="ProductID"value="<?php echo  $ProductID; ?>" >
-</div>
-<button class="btn btn-primary my-5"><a href="Index.php" class= "text-light" >ADD User</a>
+<div class="container">
 
-</button>
-<table class="table caption-top">
+<button class="btn btn-primary my-5"><a href="Index.php" class= "text-light" >ADD User</a></button>
+<table class="table caption-top table-bordered">
 
   <caption><p style="font-weight: bold;"> List View</caption>
-  <form action="update.php?ID=<?php echo $ProductID ?>"method ="POST">
+
+ 
   <thead>
     <tr>
       <th scope="col">ID</th>
@@ -55,54 +55,66 @@ $conn =new mysqli('localhost','root','','productform');
      
   ?>
 
-          <tr>
-                                        <td><?php echo $ProductID ?></td>
-                                        <td><?php echo $ProductName ?></td>
-                                        <td><?php echo $ProductPrice?></td>
-                                        <td><?php echo $ProductBrand?></td>
-                                        <td><?php echo $ProductCategory?></td>
-                                        <td><button type="button"id="Edit" class="btn btn-primary my-5"><a href="update.php?GetId=<?php echo $ProductID ?>"class= "text-light" >Edit</a></td>
-                                        <td><button type="button"id="Delete" class="btn btn-primary my-5"><a href="view.php?Del=<?php echo $ProductID?>"class= "text-light" >Delete</a></td>
-                                    </tr>  
+                        <tr ID="<?php echo $ProductID; ?>">
+                         <td><?php echo $ProductID ?></td>
+                     <td><?php echo $ProductName ?></td>
+                      <td><?php echo $ProductPrice?></td>
+                     <td><?php echo $ProductBrand?></td>
+                     <td><?php echo $ProductCategory?></td>
+                   <td><button type="button"id="Edit" class="btn btn-primary "><a href="update.php?GetId=<?php echo $ProductID ?>"class= "text-light" >Edit</a></td></button>
+                  <td><button type="submit" class="btn btn-danger remove"> Delete</button></td>
+                </tr>  
                                     <?php
                                        }
                                        ?>
 </table>
 </div>
-                                      </form>
+                                 
 
 
-
-                 
-
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script>
-$(document).ready(function() {
-	$.ajax({
-		url: "view.php",
-		type: "POST",
-		cache: false,
-		success: function(dataResult){
-	}
-  });
-	$(document).on("click", ".Delete", function() { 
-		var $ele = $(this).parent().parent();
-		$.ajax({
-			url: "DeleteQuery.php",
-			type: "POST",
-			cache: false,
-			data:{
-				ProductID: $(this).attr("data-ProductID")
-			},
-			success: function(dataResult){
-				var dataResult = JSON.parse(dataResult);
-				if(dataResult.statusCode==200){
-					$ele.fadeOut().remove();
-				}
-			}
-		});
-	});
-});
+<script type="text/javascript">  
+  $(".remove").click(function(){
+   
+   var PID = $(this).parents("tr").attr("ID");
+   console.log( PID);
+   swal({
+        title: "Are you sure?",
+        text: "You will not be able to recover this file!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonClass: "btn-danger",
+        confirmButtonText: " Delete it!",
+        cancelButtonClass: "btn-warning",
+        cancelButtonText: "cancel !",
+        closeOnConfirm: false,
+        closeOnCancel: false
+      },
+      function(isConfirm) {
+        if (isConfirm) {
+          $.ajax({
+             url: 'DeleteQuery.php',
+             type: 'POST',
+             data:{
+         
+             ProductID: PID
+            },
+            cache: false,
+             error: function() {
+                alert(' Something is wrong');
+             },
+             success: function(data) {
+                  $("#"+PID).remove();
+                  swal("Deleted!", "Your Data has been deleted.", "success");
+             }
+          });
+        } else {
+          swal("Cancelled", "Your Data is safe :)", "error");
+        }
+      });
+     
+    });
+ 
+    
 </script>
 </body>
 </html>
